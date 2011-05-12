@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import exceptions
 from decimal import Decimal
+import ast
 
 class Currency:
 	code = "XXX"
@@ -58,7 +59,7 @@ class Money:
 		if isinstance(other, Money):
 			if self.currency == other.currency:
 				return Money(amount = self.amount + other.amount, currency = self.currency)
-			else: 
+			else:
 				s = self.convert_to_default()
 				other = other.convert_to_default()
 				return Money(amount = s.amount + other.amount, currency = DEFAULT_CURRENCY)
@@ -112,10 +113,15 @@ class Money:
 	#
 	# Override comparison operators
 	#
-	def __eq__(self, other):
-		if isinstance(other, Money):
-			return (self.amount == other.amount) and (self.currency == other.currency)
-		return (self.amount == Decimal(str(other)))
+#	def __eq__(self, other):
+#		if isinstance(other, Money):
+#			return (self.amount == other.amount) and (self.currency == other.currency)
+#		elif other is None:
+#			return self is None
+#		elif other == '':
+#			return False
+#		else:
+#			return (self.amount == Decimal(str(other)))
 	def __ne__(self, other):
 		result = self.__eq__(other)
 		if result is NotImplemented:
@@ -168,20 +174,22 @@ class Money:
 		"""
 		pass # TODO
 
-	def from_string(self, s):
+	@classmethod
+	def from_string(cls, s):
 		"""
 		Parses a properly formatted string and extracts the monetary value and currency
 		"""
+		s = str(s).strip()
 		try:
-			self.amount = Decimal(str(s).strip())
+			self.amount = Decimal(s)
 			self.currency = DEFAULT_CURRENCY
 		except:
 			try:
-				s = s.strip()
-				self.currency = CURRENCY[s[:3].upper()]
-				self.amount = Decimal(s[3:].strip())
+				value = Decimal(s[3:].strip())
+				currency = CURRENCY[s[:3].upper()]
 			except:
 				raise IncorrectMoneyInputError
+			return Money(value, currency)
 
 #
 # Definitions of ISO 4217 Currencies

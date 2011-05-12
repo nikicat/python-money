@@ -8,20 +8,20 @@ __all__ = ('QuerysetWithMoney', 'MoneyManager',)
 
 class QuerysetWithMoney(QuerySet):
     
-    def _update_params(self, kwargs):
-        from django.db.models.sql.constants import LOOKUP_SEP
-        from money import Money
-        to_append = {}
-        for name, value in kwargs.items():
-            if isinstance(value, Money):
-                path = name.split(LOOKUP_SEP)
-                if len(path) > 1:
-                    field_name = currency_field_name(path[0])
-                else:
-                    field_name = currency_field_name(name)
-                to_append[field_name] = smart_unicode(value.currency)
-        kwargs.update(to_append)
-        return kwargs
+#    def _update_params(self, kwargs):
+#        from django.db.models.sql.constants import LOOKUP_SEP
+#        from money import Money
+#        to_append = {}
+#        for name, value in kwargs.items():
+#            if isinstance(value, Money):
+#                path = name.split(LOOKUP_SEP)
+#                if len(path) > 1:
+#                    field_name = currency_field_name(path[0])
+#                else:
+#                    field_name = currency_field_name(name)
+#                to_append[field_name] = smart_unicode(value.currency)
+#        kwargs.update(to_append)
+#        return kwargs
         
     def dates(self, *args, **kwargs):
         kwargs = self._update_params(kwargs)

@@ -1,10 +1,10 @@
-from django import newforms as forms
+from django import  forms
 from money import Money, CURRENCY
 from decimal import Decimal
 
 __all__ = ('InputMoneyWidget', 'CurrencySelect',)
 
-CURRENCY_CHOICES = ((c.code, c.name) for i, c in CURRENCY.items() if c.code != 'XXX')
+CURRENCY_CHOICES = sorted([(c.code, c.name) for i, c in CURRENCY.items() if c.code != 'XXX'], key = lambda x: x[1])
 
 class CurrencySelect(forms.Select):
     def __init__(self, attrs=None, choices=CURRENCY_CHOICES):
